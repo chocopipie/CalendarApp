@@ -1,0 +1,28 @@
+/* Dark Theme Stylesheet */
+
+#anchor {
+    -fx-background-color: #dedbd2;
+}
+
+/* Overall Background */
+.root {
+    -fx-background-color:  #dedbd2;
+}
+
+
+/* Calendar Header */
+#year, #month {
+    -fx-fill: black;
+}
+
+/* Days of the Week Text */
+.text-day {
+    -fx-fill: #4a5759;
+}
+
+/* Add Event Button */
+#addEventButton {
+    -fx-background-color: #4a5759;
+    -fx-text-fill: white;
+}
+
