@@ -85,5 +85,6 @@
    <Button fx:id="settingsButton" layoutX="624.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleSettingsButton" text="Settings" />
    <Separator layoutX="740.0" layoutY="100.0" orientation="VERTICAL" prefHeight="244.0" prefWidth="0.0" />
    <VBox fx:id="calendarRadioBox" layoutX="754.0" layoutY="100.0" prefHeight="226.0" prefWidth="115.0" />
+   <Button layoutX="824.0" layoutY="13.0" mnemonicParsing="false" onAction="#logOut" text="Log out" />
 
 </AnchorPane>

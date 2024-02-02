@@ -4,12 +4,14 @@ import java.util.ArrayList;
 
 public class User {
     private String username;
+    private String password; // TEMP!!!!! Will move to database or other storage later
     private ArrayList<Event> sharedEvents;
     private ArrayList<AppCalendar> ownedCalendars;
     private AppSettings appSettings;
 
-    public User(String username) {
+    public User(String username, String password) {
         this.username = username;
+        this.password = password;
         this.sharedEvents = new ArrayList<Event>();
         this.ownedCalendars = new ArrayList<AppCalendar>();
         this.appSettings = new AppSettings();
@@ -22,6 +24,8 @@ public class User {
     public String getUsername() {
         return username;
     }
+    public void setPassword(String password) {this.password = password;}
+    public String getPassword() { return this.password;}
     public AppSettings getAppSettings() {
         return appSettings;
     }

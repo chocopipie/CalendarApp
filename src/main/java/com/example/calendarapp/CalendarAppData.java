@@ -3,7 +3,7 @@ package com.example.calendarapp;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CalendarAppData {
+public class CalendarAppData implements Authentication {
     private ArrayList<User> users;
 
     public CalendarAppData() {
@@ -23,5 +23,21 @@ public class CalendarAppData {
                 .filter(user -> Objects.equals(user.getUsername(), userName))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public User loginUser(String username, String password) {
+        // authenticate user
+        for (User user: users) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void logoutUser() {
+        // implement later
     }
 }

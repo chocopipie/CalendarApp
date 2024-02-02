@@ -42,6 +42,7 @@ public class CalendarController implements Initializable {
     private Stage editEventPopupStage;
 
     private Stage settingsStage;
+    private Stage loginStage;
 
     @FXML
     private ToggleGroup calendarToggleGroup;
@@ -79,9 +80,9 @@ public class CalendarController implements Initializable {
     }
 
     // this method is called when the app starts
-    public void setUpUserCalendarData(CalendarAppData calendarAppData) {
+    public void setUpUserCalendarData(User currentUser) {
         // setup
-        this.currentUser = calendarAppData.getUsers().get(0);
+        this.currentUser = currentUser;
         this.calendarList = currentUser.getOwnedCalendars();
         this.currentCalendar = calendarList.get(0);
 
@@ -126,6 +127,9 @@ public class CalendarController implements Initializable {
         calendarToggleGroup.selectToggle(calendarToggleGroup.getToggles().get(0));
     }
 
+    public void setLoginStage(Stage loginStage) {
+        this.loginStage = loginStage;
+    }
 
     // METHODS TO HANDLE EVENTS
 
@@ -158,6 +162,18 @@ public class CalendarController implements Initializable {
         calendar.getChildren().clear();
         // draw calendar for new month
         drawMonthCalendar();
+    }
+
+    @FXML
+    void logOut(ActionEvent event) {
+        // close the current calendar Stage
+        Stage stage = (Stage) calendar.getScene().getWindow();
+        stage.close();
+
+        // show the login stage
+        if (loginStage != null) {
+            loginStage.show();
+        }
     }
 
     @FXML
