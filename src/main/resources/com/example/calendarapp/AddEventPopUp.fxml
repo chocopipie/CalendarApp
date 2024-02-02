@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="260.0" prefWidth="368.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calendarapp.AddEventPopUpController">
+<AnchorPane prefHeight="260.0" prefWidth="368.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calendarapp.AddEventPopUpController">
    <children>
       <TextField fx:id="eventNameField" layoutX="126.0" layoutY="50.0" />
       <Label layoutX="51.0" layoutY="54.0" text="Event Name">

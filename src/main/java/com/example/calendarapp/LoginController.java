@@ -37,7 +37,7 @@ public class LoginController {
         String password = passwordField.getText();
 
         User authenticatedUser = calendarAppData.loginUser(username, password);
-        
+
         usernameField.clear();
         passwordField.clear();
 

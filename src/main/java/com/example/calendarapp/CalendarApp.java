@@ -18,7 +18,6 @@ public class CalendarApp extends Application {
         // create the calendarAppData
         createCalendarAppData();
 
-
         FXMLLoader loginLoader = new FXMLLoader(CalendarApp.class.getResource("login-view.fxml"));
         Scene loginScene = new Scene(loginLoader.load(), 315, 195);
 
