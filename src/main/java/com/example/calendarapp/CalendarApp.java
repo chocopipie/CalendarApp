@@ -129,21 +129,10 @@ public class CalendarApp extends Application {
         // Add calendars to users
         user2.addCalendar(calendar4, Visible.PRIVATE);
 
-    }
+        // test code on CLI
+        // user2 shares the first event on calendar3 to user1
+        user2.shareEvent(calendar3.getCalendarID(), calendar3.getEvents().get(0).getEventID(), user1);
+        System.out.println(user1.getSharedEvents().get(0).toString());
 
-//    private static void displayUserDetails(User user) {
-//        System.out.println("User: " + user.getUsername());
-//        System.out.println("Owned Calendars:");
-//        for (AppCalendar calendar : user.getOwnedCalendars()) {
-//            System.out.println("Calendar ID: " + calendar.getCalendarID());
-//            System.out.println(calendar.printAllEvents());
-//        }
-//
-//        System.out.println("Shared Events:");
-//        for (Event sharedEvent : user.getSharedEvents()) {
-//            System.out.println(sharedEvent.printTimes());
-//        }
-//
-//        System.out.println("------------------------");
-//    }
+    }
 }

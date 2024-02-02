@@ -134,7 +134,7 @@ public class CalendarController implements Initializable {
     // METHODS TO HANDLE EVENTS
 
     @FXML
-    void handleVisibilityToggle() {
+    public void handleVisibilityToggle() {
         // Handle the logic to switch between private and public calendar visibility
         if (Objects.equals(visibility.getText(), "PUBLIC")) {
             currentCalendar.setCalendarVisibility(Visible.PRIVATE);
@@ -184,9 +184,9 @@ public class CalendarController implements Initializable {
         drawMonthCalendar();
     }
 
-    // Clicking addEventButton calls selectAddEventOption
+    // Clicking addEventButton calls showAddEventPopup
     @FXML
-    void selectAddEventOption() throws IOException {
+    private void showAddEventPopup() throws IOException {
         // Load the FXML file for the pop-up
         FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEventPopUp.fxml"));
         Parent popupContent = loader.load();

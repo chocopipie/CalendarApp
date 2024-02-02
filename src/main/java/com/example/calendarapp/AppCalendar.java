@@ -141,7 +141,6 @@ public abstract class AppCalendar {
             datetime += offsetString; // Assuming UTC if no time zone is specified
         //}
 
-        System.out.println(datetime);
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         return ZonedDateTime.parse(datetime, formatter);
     }
