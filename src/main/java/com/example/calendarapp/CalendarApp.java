@@ -69,7 +69,7 @@ public class CalendarApp extends Application {
     public void createCalendarAppData() {
         // code to test
         // initialize the calendarApp
-        calendarAppData = new CalendarAppData();
+        calendarAppData = CalendarAppData.getInstance();
 
         // Create user 1
         User user1 = new User("User1", "123456");

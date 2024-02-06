@@ -26,7 +26,6 @@ import java.util.*;
 import com.example.calendarapp.AddEventPopUpController;
 
 public class CalendarController implements Initializable {
-    private static CalendarAppData calendarApp;
 
     ZonedDateTime dateFocus;
     ZonedDateTime today;
@@ -73,8 +72,6 @@ public class CalendarController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // initialize the calendarApp
-        calendarApp = new CalendarAppData();
         today = ZonedDateTime.now();
         dateFocus = ZonedDateTime.now();
     }
