@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class CalendarAppData implements Authentication {
+public class CalendarAppData {
     private static CalendarAppData calendarAppData;
     private ArrayList<User> users;
 
@@ -33,19 +33,4 @@ public class CalendarAppData implements Authentication {
                 .orElse(null);
     }
 
-    @Override
-    public User loginUser(String username, String password) {
-        // authenticate user
-        for (User user: users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void logoutUser() {
-        // implement later
-    }
 }

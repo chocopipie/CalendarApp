@@ -11,8 +11,6 @@ import java.util.Objects;
 
 public class CalendarApp extends Application {
 
-    private static CalendarAppData calendarAppData;
-
     @Override
     public void start(Stage stage) throws IOException {
         // create the calendarAppData
@@ -23,7 +21,7 @@ public class CalendarApp extends Application {
 
 
         LoginController loginController = loginLoader.getController();
-        loginController.setCalendarAppData(calendarAppData);
+        loginController.setCalendarAppData();
         stage.setTitle("Login");
         stage.setScene(loginScene);
         stage.show();
@@ -69,7 +67,7 @@ public class CalendarApp extends Application {
     public void createCalendarAppData() {
         // code to test
         // initialize the calendarApp
-        calendarAppData = CalendarAppData.getInstance();
+        CalendarAppData calendarAppData = CalendarAppData.getInstance();
 
         // Create user 1
         User user1 = new User("User1", "123456");

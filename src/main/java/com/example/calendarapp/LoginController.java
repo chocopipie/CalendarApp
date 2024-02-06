@@ -12,9 +12,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
-public class LoginController {
+public class LoginController implements Authentication{
     @FXML
     private TextField usernameField;
 
@@ -27,16 +28,16 @@ public class LoginController {
     @FXML
     private Label errorMessage;
 
-    private CalendarAppData calendarAppData;
+    private ArrayList<User> appUsersList;
 
-    public void setCalendarAppData(CalendarAppData calendarAppData) {
-        this.calendarAppData = calendarAppData;
+    public void setCalendarAppData() {
+        this.appUsersList = CalendarAppData.getInstance().getUsers();
     }
     public void loginUser(ActionEvent event) throws IOException {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        User authenticatedUser = calendarAppData.loginUser(username, password);
+        User authenticatedUser = authenticateUser(username, password);
 
         usernameField.clear();
         passwordField.clear();
@@ -67,4 +68,19 @@ public class LoginController {
     }
 
 
+    @Override
+    public User authenticateUser(String username, String password) {
+        // authenticate user
+        for (User user: appUsersList) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void logoutUser() {
+
+    }
 }
