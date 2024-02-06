@@ -30,16 +30,14 @@ public class CalendarController implements Initializable {
     ZonedDateTime dateFocus;
     ZonedDateTime today;
 
-    private User currentUser;
-
     private ArrayList<AppCalendar> calendarList;
+    private User currentUser;
     private AppCalendar currentCalendar;
+    private CalendarViewStrategy viewStrategy; // view strategy for current calendar (day/month/year)
 
     // store the reference to the pop-up stage
     private Stage addEventPopupStage;
-    // store the reference to the edit event pop-up stage
     private Stage editEventPopupStage;
-
     private Stage settingsStage;
     private Stage loginStage;
 
@@ -74,6 +72,8 @@ public class CalendarController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         today = ZonedDateTime.now();
         dateFocus = ZonedDateTime.now();
+        // set default viewStrategy to month view
+        viewStrategy = new MonthlyViewStrategy(this);
     }
 
     // this method is called when the app starts
@@ -93,6 +93,11 @@ public class CalendarController implements Initializable {
 
         // draw the calendar
         drawMonthCalendar();
+    }
+
+    // this method sets the view strategy (day/month/year)
+    public void setViewStrategy(CalendarViewStrategy viewStrategy) {
+        this.viewStrategy = viewStrategy;
     }
 
     private void setUpVisibility() {
@@ -311,41 +316,7 @@ public class CalendarController implements Initializable {
         });
     }
 
-
-    // Takes a list of CalendarEventForMonth objects and organizes them into
-    // a map where the key is the day of the month,
-    // and the value is a list of events for that day.
-    private Map<Integer, ArrayList<Event>> createCalendarMapForMonth(ArrayList<Event> calendarEventsForMonth) {
-        Map<Integer, ArrayList<Event>> calendarEventMap = new HashMap<>();
-
-        for (Event event: calendarEventsForMonth) {
-            // get the day of month for the event
-            int eventDate = event.getStartTime().getDayOfMonth();
-            calendarEventMap.computeIfAbsent(eventDate, k -> new ArrayList<>()).add(event);
-        }
-
-        return calendarEventMap;
-    }
-
-
-    // Get the event list for current month
-    private ArrayList<Event> getEventListForMonth() {
-        // create event list for current month
-        ArrayList<Event> eventsForMonth = new ArrayList<>();
-        // get event list on current calendar
-        ArrayList<Event> events = currentCalendar.getEvents();
-        int year = dateFocus.getYear();
-        int month = dateFocus.getMonth().getValue();
-
-        for (Event event: events) {
-            if (event.getStartTime().getMonth().getValue() == month) {
-                eventsForMonth.add(event);
-            }
-        }
-        return eventsForMonth;
-    }
-
-    private void drawMonthCalendar() {
+    public void drawMonthCalendar() {
         year.setText(String.valueOf(dateFocus.getYear()));
         month.setText(String.valueOf(dateFocus.getMonth()));
 
@@ -357,10 +328,12 @@ public class CalendarController implements Initializable {
         // The amount of space between rows in a horizontal flowpane.
         double spacingV = calendar.getVgap();
 
+        ArrayList<Event> eventsList = currentCalendar.getEvents();
+        int month = dateFocus.getMonth().getValue();
         // list of events in current month
-        ArrayList<Event> calendarEventsForMonth = getEventListForMonth();
+        ArrayList<Event> calendarEventsForMonth = viewStrategy.getEventList(eventsList, month);
         // create map of the above list
-        Map<Integer, ArrayList<Event>> eventForMonthMap = createCalendarMapForMonth(calendarEventsForMonth);
+        Map<Integer, ArrayList<Event>> eventForMonthMap = viewStrategy.createCalendarMap(calendarEventsForMonth);
 
         // calculate max date for month
         int monthMaxDate = dateFocus.getMonth().maxLength();
