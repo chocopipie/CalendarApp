@@ -119,14 +119,6 @@ public abstract class AppCalendar {
                 .orElse(null);
     }
 
-//    public void updateEventById(int eventID, Event event) {
-//        for (int i = 0; i < events.size(); i++) {
-//            if (events.get(i).getEventID() == eventID) {
-//                events.set(i, event);
-//                return;
-//            }
-//        }
-//    }
 
     private ZonedDateTime stringToZonedDateTimeParser(String datetime) {
         // Implement logic to parse a string into ZonedDateTime
