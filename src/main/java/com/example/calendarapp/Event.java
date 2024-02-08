@@ -58,6 +58,7 @@ public class Event {
         endDateTime = stringToZonedDateTimeParser(endTime);
     }
 
+    // Notes for A3: extract method
     private ZonedDateTime stringToZonedDateTimeParser(String datetime) {
         TimeZone ownerTimeZone = eventOwner.getAppSettings().getTimeZone();
         return DateTimeUtils.stringToZonedDateTimeParser(datetime, ownerTimeZone);

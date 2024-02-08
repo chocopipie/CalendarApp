@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
+// Notes for A3: extract method
 public class DateTimeUtils {
     public static ZonedDateTime stringToZonedDateTimeParser(String datetime, TimeZone timeZone) {
         // Implement logic to parse a string into ZonedDateTime

@@ -142,21 +142,21 @@ public class CalendarController implements Initializable {
 
     @FXML
     public void changeToWeekView() {
-        viewStrategy = new WeeklyViewStrategy(this);
+        viewStrategy = new WeeklyViewStrategy(this); // Notes for A3: strategy method
 
         prevButton.setOnAction(event -> moveToPrevWeek(null));
         nextButton.setOnAction(event -> moveToNextWeek(null));
         calendar.getChildren().clear();
-        viewStrategy.drawCalendar();
+        viewStrategy.drawCalendar();  // Notes for A3: strategy method
     }
     @FXML
     public void changeToMonthView() {
-        viewStrategy = new MonthlyViewStrategy(this);
+        viewStrategy = new MonthlyViewStrategy(this); // Notes for A3: strategy method
 
         prevButton.setOnAction(this::moveToPrevMonth);
         nextButton.setOnAction(this::moveToNextMonth);
         calendar.getChildren().clear();
-        viewStrategy.drawCalendar();
+        viewStrategy.drawCalendar();  // Notes for A3: strategy method
     }
 
     @FXML
@@ -242,6 +242,7 @@ public class CalendarController implements Initializable {
         AddEventPopUpController popupController = loader.getController();
         popupController.setMainController(this);
 
+        // Notes for A3: replaced magic literals
         Scene popupScene = new Scene(popupContent, root.getPrefWidth(), root.getPrefHeight());
 
         //set theme for popup scene that matches current theme
@@ -274,7 +275,7 @@ public class CalendarController implements Initializable {
         // pass the event data to the popupController
         popupController.setEventData(event);
 
-        // Create a scene and set it to the pop-up stage
+        // Notes for A3: replaced magic literals
         Scene popupScene = new Scene(popupContent, root.getPrefWidth(), root.getPrefHeight());
 
         //set theme for popup scene that matches current theme
@@ -305,7 +306,7 @@ public class CalendarController implements Initializable {
         settingsController.setMainController(this, calendar.getScene());
         settingsController.setUserSetting(currentUser);
 
-        // Create a scene and set it to the pop-up stage
+        // Notes for A3: replaced magic literals
         Scene popupScene = new Scene(popupContent, root.getPrefWidth(), root.getPrefHeight());
         settingsStage.setScene(popupScene);
 

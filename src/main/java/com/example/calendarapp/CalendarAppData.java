@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
+// Notes for A3: singleton method
 public class CalendarAppData {
     private static CalendarAppData calendarAppData;
     private ArrayList<User> users;

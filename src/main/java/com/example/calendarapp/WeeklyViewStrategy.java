@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// Notes for A3: strategy method
 public class WeeklyViewStrategy implements CalendarViewStrategy {
     private final CalendarController calendarController;
     private static int currentYear;

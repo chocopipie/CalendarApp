@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// Notes for A3: strategy method
 public class MonthlyViewStrategy implements CalendarViewStrategy{
     private final CalendarController calendarController;
 

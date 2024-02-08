@@ -22,6 +22,7 @@ public class CalendarApp extends Application {
         // obtain root node
         Region root = (Region) loginContent;
 
+        // Notes for A3: replaced magic literals
         Scene loginScene = new Scene(loginContent, root.getPrefWidth(), root.getPrefHeight());
 
 
@@ -70,8 +71,7 @@ public class CalendarApp extends Application {
     }
 
     public void createCalendarAppData() {
-        // code to test
-        // initialize the calendarApp
+        // Notes for A3: singleton method
         CalendarAppData calendarAppData = CalendarAppData.getInstance();
 
         // Create user 1

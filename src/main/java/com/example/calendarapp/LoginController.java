@@ -55,6 +55,7 @@ public class LoginController implements Authentication{
         FXMLLoader fxmlLoader = new FXMLLoader(CalendarApp.class.getResource("hello-view.fxml"));
         Parent loaderContent = fxmlLoader.load();
         Region root = (Region) loaderContent;
+        // Notes for A3: replaced magic literals
         Scene scene = new Scene(loaderContent, root.getPrefWidth(), root.getPrefHeight());
 
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("Light.css")).toExternalForm());

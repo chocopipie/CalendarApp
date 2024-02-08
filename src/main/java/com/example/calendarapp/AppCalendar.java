@@ -120,6 +120,7 @@ public abstract class AppCalendar {
     }
 
 
+    // Notes for A3: extract method
     private ZonedDateTime stringToZonedDateTimeParser(String datetime) {
         TimeZone ownerTimeZone = calendarOwner.getAppSettings().getTimeZone();
         return DateTimeUtils.stringToZonedDateTimeParser(datetime, ownerTimeZone);
