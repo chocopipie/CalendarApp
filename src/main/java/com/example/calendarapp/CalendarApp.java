@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,7 +18,11 @@ public class CalendarApp extends Application {
         createCalendarAppData();
 
         FXMLLoader loginLoader = new FXMLLoader(CalendarApp.class.getResource("login-view.fxml"));
-        Scene loginScene = new Scene(loginLoader.load(), 315, 195);
+        Parent loginContent = loginLoader.load();
+        // obtain root node
+        Region root = (Region) loginContent;
+
+        Scene loginScene = new Scene(loginContent, root.getPrefWidth(), root.getPrefHeight());
 
 
         LoginController loginController = loginLoader.getController();

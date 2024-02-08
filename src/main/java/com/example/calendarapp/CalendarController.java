@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -231,6 +232,7 @@ public class CalendarController implements Initializable {
         // Load the FXML file for the pop-up
         FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEventPopUp.fxml"));
         Parent popupContent = loader.load();
+        Region root = (Region) popupContent;
 
         // Create a new Stage (pop-up window)
         addEventPopupStage = new Stage();
@@ -238,11 +240,9 @@ public class CalendarController implements Initializable {
 
         // Set the FXML controller for the pop-up
         AddEventPopUpController popupController = loader.getController();
-
         popupController.setMainController(this);
 
-        // Create a scene and set it to the pop-up stage
-        Scene popupScene = new Scene(popupContent, 368, 260);
+        Scene popupScene = new Scene(popupContent, root.getPrefWidth(), root.getPrefHeight());
 
         //set theme for popup scene that matches current theme
         String currentThemeStyleSheet = currentUser.getAppSettings().getCurrentThemeStylesheet();
@@ -261,6 +261,7 @@ public class CalendarController implements Initializable {
         // Load the FXML file for the pop-up
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EditEventPopUp.fxml"));
         Parent popupContent = loader.load();
+        Region root = (Region) popupContent;
 
         // Create a new Stage (pop-up window)
         editEventPopupStage = new Stage();
@@ -274,7 +275,7 @@ public class CalendarController implements Initializable {
         popupController.setEventData(event);
 
         // Create a scene and set it to the pop-up stage
-        Scene popupScene = new Scene(popupContent, 368, 260);
+        Scene popupScene = new Scene(popupContent, root.getPrefWidth(), root.getPrefHeight());
 
         //set theme for popup scene that matches current theme
         String currentThemeStyleSheet = currentUser.getAppSettings().getCurrentThemeStylesheet();
@@ -291,6 +292,7 @@ public class CalendarController implements Initializable {
         // Load the FXML file for the pop-up
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Settings.fxml"));
         Parent popupContent = loader.load();
+        Region root = (Region) popupContent;
 
         // Create a new Stage (pop-up window)
         settingsStage = new Stage();
@@ -304,7 +306,7 @@ public class CalendarController implements Initializable {
         settingsController.setUserSetting(currentUser);
 
         // Create a scene and set it to the pop-up stage
-        Scene popupScene = new Scene(popupContent, 253.6, 179.2);
+        Scene popupScene = new Scene(popupContent, root.getPrefWidth(), root.getPrefHeight());
         settingsStage.setScene(popupScene);
 
         // Show the pop-up window

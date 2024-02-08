@@ -4,11 +4,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -51,7 +53,9 @@ public class LoginController implements Authentication{
 
     private void openCalendarScene(User user) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(CalendarApp.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 898, 642);
+        Parent loaderContent = fxmlLoader.load();
+        Region root = (Region) loaderContent;
+        Scene scene = new Scene(loaderContent, root.getPrefWidth(), root.getPrefHeight());
 
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("Light.css")).toExternalForm());
         CalendarController calendarController = fxmlLoader.getController();
