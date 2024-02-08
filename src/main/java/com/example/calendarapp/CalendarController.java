@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -18,29 +18,28 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.*;
 
-import com.example.calendarapp.AddEventPopUpController;
 
 public class CalendarController implements Initializable {
-    private static CalendarAppData calendarApp;
 
     ZonedDateTime dateFocus;
     ZonedDateTime today;
 
-    private User currentUser;
-
     private ArrayList<AppCalendar> calendarList;
+    private User currentUser;
     private AppCalendar currentCalendar;
+    private CalendarViewStrategy viewStrategy; // view strategy for current calendar (day/month/year)
 
     // store the reference to the pop-up stage
     private Stage addEventPopupStage;
-    // store the reference to the edit event pop-up stage
     private Stage editEventPopupStage;
-
     private Stage settingsStage;
     private Stage loginStage;
 
@@ -57,13 +56,16 @@ public class CalendarController implements Initializable {
     private Text month;
 
     @FXML
+    private Text hyphen;
+
+    @FXML
     private FlowPane calendar;
 
     @FXML
-    private Button addEventButton;
+    private Button prevButton;
 
     @FXML
-    private Button settingsButton;
+    private Button nextButton;
 
     @FXML
     private ToggleButton visibility;
@@ -73,10 +75,10 @@ public class CalendarController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // initialize the calendarApp
-        calendarApp = new CalendarAppData();
         today = ZonedDateTime.now();
         dateFocus = ZonedDateTime.now();
+        // set default viewStrategy to month view
+        viewStrategy = new MonthlyViewStrategy(this);
     }
 
     // this method is called when the app starts
@@ -96,6 +98,11 @@ public class CalendarController implements Initializable {
 
         // draw the calendar
         drawMonthCalendar();
+    }
+
+    // this method sets the view strategy (day/month/year)
+    public void setViewStrategy(CalendarViewStrategy viewStrategy) {
+        this.viewStrategy = viewStrategy;
     }
 
     private void setUpVisibility() {
@@ -134,6 +141,25 @@ public class CalendarController implements Initializable {
     // METHODS TO HANDLE EVENTS
 
     @FXML
+    public void changeToWeekView() {
+        viewStrategy = new WeeklyViewStrategy(this);
+
+        prevButton.setOnAction(event -> moveToPrevWeek(null));
+        nextButton.setOnAction(event -> moveToNextWeek(null));
+        calendar.getChildren().clear();
+        viewStrategy.drawCalendar();
+    }
+    @FXML
+    public void changeToMonthView() {
+        viewStrategy = new MonthlyViewStrategy(this);
+
+        prevButton.setOnAction(this::moveToPrevMonth);
+        nextButton.setOnAction(this::moveToNextMonth);
+        calendar.getChildren().clear();
+        viewStrategy.drawCalendar();
+    }
+
+    @FXML
     public void handleVisibilityToggle() {
         // Handle the logic to switch between private and public calendar visibility
         if (Objects.equals(visibility.getText(), "PUBLIC")) {
@@ -153,7 +179,7 @@ public class CalendarController implements Initializable {
 
         calendar.getChildren().clear();
         // re-draw the calendar with the selected calendar data
-        drawMonthCalendar();
+        viewStrategy.drawCalendar();
     }
 
     @FXML
@@ -162,6 +188,30 @@ public class CalendarController implements Initializable {
         calendar.getChildren().clear();
         // draw calendar for new month
         drawMonthCalendar();
+    }
+
+    @FXML
+    void moveToNextMonth(ActionEvent event) {
+        dateFocus = dateFocus.plusMonths(1);
+        calendar.getChildren().clear();
+        // draw calendar for new month
+        drawMonthCalendar();
+    }
+
+    @FXML
+    void moveToPrevWeek(ActionEvent event) {
+        dateFocus = dateFocus.minusWeeks(1);
+        calendar.getChildren().clear();
+        // draw calendar for new month
+        drawWeekCalendar();
+    }
+
+    @FXML
+    void moveToNextWeek(ActionEvent event) {
+        dateFocus = dateFocus.plusWeeks(1);
+        calendar.getChildren().clear();
+        // draw calendar for new month
+        drawWeekCalendar();
     }
 
     @FXML
@@ -176,20 +226,13 @@ public class CalendarController implements Initializable {
         }
     }
 
-    @FXML
-    void moveToNextMonth(ActionEvent event) {
-        dateFocus = dateFocus.plusMonths(1);
-        calendar.getChildren().clear();
-        // draw calendar for new month
-        drawMonthCalendar();
-    }
-
     // Clicking addEventButton calls showAddEventPopup
     @FXML
     private void showAddEventPopup() throws IOException {
         // Load the FXML file for the pop-up
         FXMLLoader loader = new FXMLLoader(getClass().getResource("AddEventPopUp.fxml"));
         Parent popupContent = loader.load();
+        Region root = (Region) popupContent;
 
         // Create a new Stage (pop-up window)
         addEventPopupStage = new Stage();
@@ -197,11 +240,9 @@ public class CalendarController implements Initializable {
 
         // Set the FXML controller for the pop-up
         AddEventPopUpController popupController = loader.getController();
-
         popupController.setMainController(this);
 
-        // Create a scene and set it to the pop-up stage
-        Scene popupScene = new Scene(popupContent, 368, 260);
+        Scene popupScene = new Scene(popupContent, root.getPrefWidth(), root.getPrefHeight());
 
         //set theme for popup scene that matches current theme
         String currentThemeStyleSheet = currentUser.getAppSettings().getCurrentThemeStylesheet();
@@ -220,6 +261,7 @@ public class CalendarController implements Initializable {
         // Load the FXML file for the pop-up
         FXMLLoader loader = new FXMLLoader(getClass().getResource("EditEventPopUp.fxml"));
         Parent popupContent = loader.load();
+        Region root = (Region) popupContent;
 
         // Create a new Stage (pop-up window)
         editEventPopupStage = new Stage();
@@ -233,7 +275,7 @@ public class CalendarController implements Initializable {
         popupController.setEventData(event);
 
         // Create a scene and set it to the pop-up stage
-        Scene popupScene = new Scene(popupContent, 368, 260);
+        Scene popupScene = new Scene(popupContent, root.getPrefWidth(), root.getPrefHeight());
 
         //set theme for popup scene that matches current theme
         String currentThemeStyleSheet = currentUser.getAppSettings().getCurrentThemeStylesheet();
@@ -250,6 +292,7 @@ public class CalendarController implements Initializable {
         // Load the FXML file for the pop-up
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Settings.fxml"));
         Parent popupContent = loader.load();
+        Region root = (Region) popupContent;
 
         // Create a new Stage (pop-up window)
         settingsStage = new Stage();
@@ -263,7 +306,7 @@ public class CalendarController implements Initializable {
         settingsController.setUserSetting(currentUser);
 
         // Create a scene and set it to the pop-up stage
-        Scene popupScene = new Scene(popupContent, 253.6, 179.2);
+        Scene popupScene = new Scene(popupContent, root.getPrefWidth(), root.getPrefHeight());
         settingsStage.setScene(popupScene);
 
         // Show the pop-up window
@@ -314,41 +357,8 @@ public class CalendarController implements Initializable {
         });
     }
 
-
-    // Takes a list of CalendarEventForMonth objects and organizes them into
-    // a map where the key is the day of the month,
-    // and the value is a list of events for that day.
-    private Map<Integer, ArrayList<Event>> createCalendarMapForMonth(ArrayList<Event> calendarEventsForMonth) {
-        Map<Integer, ArrayList<Event>> calendarEventMap = new HashMap<>();
-
-        for (Event event: calendarEventsForMonth) {
-            // get the day of month for the event
-            int eventDate = event.getStartTime().getDayOfMonth();
-            calendarEventMap.computeIfAbsent(eventDate, k -> new ArrayList<>()).add(event);
-        }
-
-        return calendarEventMap;
-    }
-
-
-    // Get the event list for current month
-    private ArrayList<Event> getEventListForMonth() {
-        // create event list for current month
-        ArrayList<Event> eventsForMonth = new ArrayList<>();
-        // get event list on current calendar
-        ArrayList<Event> events = currentCalendar.getEvents();
-        int year = dateFocus.getYear();
-        int month = dateFocus.getMonth().getValue();
-
-        for (Event event: events) {
-            if (event.getStartTime().getMonth().getValue() == month) {
-                eventsForMonth.add(event);
-            }
-        }
-        return eventsForMonth;
-    }
-
-    private void drawMonthCalendar() {
+    public void drawMonthCalendar() {
+        hyphen.setVisible(false); // rm hyphen to display MONTH YEAR text
         year.setText(String.valueOf(dateFocus.getYear()));
         month.setText(String.valueOf(dateFocus.getMonth()));
 
@@ -360,10 +370,12 @@ public class CalendarController implements Initializable {
         // The amount of space between rows in a horizontal flowpane.
         double spacingV = calendar.getVgap();
 
+        ArrayList<Event> eventsList = currentCalendar.getEvents();
+        int month = dateFocus.getMonth().getValue();
         // list of events in current month
-        ArrayList<Event> calendarEventsForMonth = getEventListForMonth();
+        ArrayList<Event> calendarEventsForMonth = viewStrategy.getEventList(eventsList, month);
         // create map of the above list
-        Map<Integer, ArrayList<Event>> eventForMonthMap = createCalendarMapForMonth(calendarEventsForMonth);
+        Map<Integer, ArrayList<Event>> eventForMonthMap = viewStrategy.createCalendarMap(calendarEventsForMonth);
 
         // calculate max date for month
         int monthMaxDate = dateFocus.getMonth().maxLength();
@@ -413,6 +425,84 @@ public class CalendarController implements Initializable {
         }
     }
 
+    public void drawWeekCalendar() {
+        // replace default #### - #### from Month Year into
+        // first and last date of week
+        hyphen.setVisible(true); // rm hyphen to display MMMM YYYY
+        TemporalField day = WeekFields.ISO.dayOfWeek();
+        ZonedDateTime firstDateOfWeek = dateFocus.with(day, day.range().getMinimum());
+        year.setText(firstDateOfWeek.format(DateTimeFormatter.ofPattern("MM/dd")));
+        ZonedDateTime lastDateOfWeek = firstDateOfWeek.plusDays(6);
+        month.setText(lastDateOfWeek.format(DateTimeFormatter.ofPattern("MM/dd")));
+
+
+        double calendarWidth = calendar.getPrefWidth();
+        double calendarHeight = calendar.getPrefHeight();
+        double strokeWidth = 0.5;
+        double spacingH = calendar.getHgap(); // Horizontal spacing
+        double spacingV = calendar.getVgap(); // Vertical spacing
+
+        // Get the events list for the current week
+        ArrayList<Event> eventsList = currentCalendar.getEvents();
+        int currentWeek = dateFocus.get(WeekFields.ISO.weekOfWeekBasedYear());
+        int currentHour = dateFocus.getHour();
+
+        WeeklyViewStrategy.setCurrentYear(dateFocus.getYear());
+        // list of events in current week
+        ArrayList<Event> calendarEventsForWeek = viewStrategy.getEventList(eventsList, currentWeek);
+        // Create a map to store events for each day of the week
+        Map<Integer, ArrayList<Event>> eventsForWeekMap = viewStrategy.createCalendarMap(calendarEventsForWeek);
+        //System.out.println(eventsForWeekMap);
+
+        // Calculate the dimensions of each cell in the calendar grid
+        double rectangleWidth = (calendarWidth / 7) - strokeWidth - spacingH;
+        double rectangleHeight = (calendarHeight / 24) - strokeWidth - spacingV;
+
+
+        // Iterate over each hour of the day
+        for (int hour = 0; hour < 24; hour++) {
+            // Iterate over each day of the week
+            for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+                StackPane stackPane = new StackPane();
+
+                Rectangle rectangle = new Rectangle();
+                rectangle.setFill(Color.TRANSPARENT);
+                rectangle.setStroke(Color.GRAY);
+                rectangle.setStrokeWidth(strokeWidth);
+                rectangle.setWidth(rectangleWidth);
+                rectangle.setHeight(rectangleHeight);
+                stackPane.getChildren().add(rectangle);
+
+                // Calculate the current time (hour) for this cell
+                int currentHourOfDay = (hour + currentHour) % 24;
+
+
+                // Get the events for the current day of the week
+                ArrayList<Event> eventsForCurrentDay = eventsForWeekMap.get(dayOfWeek);
+                System.out.println(eventsForCurrentDay);
+
+                if(eventsForCurrentDay != null){
+                    // Display events for the current day and hour
+                    for (Event event : eventsForCurrentDay) {
+                        ZonedDateTime eventStartTime = event.getStartTime();
+                        ZonedDateTime eventEndTime = event.getEndTime();
+                        int eventStartHour = eventStartTime.getHour();
+                        int eventEndHour = eventEndTime.getHour();
+
+                        if (currentHourOfDay >= eventStartHour && currentHourOfDay < eventEndHour) {
+                            CreateCalendarEvent(eventsForCurrentDay, rectangleHeight, rectangleWidth, stackPane);
+                        }
+                    }
+                }
+
+
+                calendar.getChildren().add(stackPane);
+            }
+
+        }
+    }
+
+
     public void addEvent(String eventName, LocalDate eventDate, String startTime, String endTime) {
 
         //currentCalendar.addEvent("Hangout", "2024-01-15T17:00", "2024-01-16T17:30");
@@ -423,7 +513,7 @@ public class CalendarController implements Initializable {
 
         // re-draw the updated calendar
         calendar.getChildren().clear();
-        drawMonthCalendar();
+        viewStrategy.drawCalendar();
 
         handleClosePopUp(); // Call the method to handle pop-up closing
     }
@@ -440,7 +530,7 @@ public class CalendarController implements Initializable {
 
         // re-draw the updated calendar
         calendar.getChildren().clear();
-        drawMonthCalendar();
+        viewStrategy.drawCalendar();
 
         handleClosePopUp(); // Call the method to handle pop-up closing
     }
@@ -451,7 +541,7 @@ public class CalendarController implements Initializable {
 
         // re-draw the updated calendar
         calendar.getChildren().clear();
-        drawMonthCalendar();
+        viewStrategy.drawCalendar();
 
         handleClosePopUp(); // Call the method to handle pop-up closing
     }
@@ -459,7 +549,7 @@ public class CalendarController implements Initializable {
     public void saveSettings() {
         // re-draw the updated calendar
         calendar.getChildren().clear();
-        drawMonthCalendar();
+        viewStrategy.drawCalendar();
 
         handleClosePopUp();
     }

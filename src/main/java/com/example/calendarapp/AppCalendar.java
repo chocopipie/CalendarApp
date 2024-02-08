@@ -119,38 +119,9 @@ public abstract class AppCalendar {
                 .orElse(null);
     }
 
-//    public void updateEventById(int eventID, Event event) {
-//        for (int i = 0; i < events.size(); i++) {
-//            if (events.get(i).getEventID() == eventID) {
-//                events.set(i, event);
-//                return;
-//            }
-//        }
-//    }
 
     private ZonedDateTime stringToZonedDateTimeParser(String datetime) {
-        // Implement logic to parse a string into ZonedDateTime
-        // Append a default time zone if not present in the input string
         TimeZone ownerTimeZone = calendarOwner.getAppSettings().getTimeZone();
-        // Get the raw offset in milliseconds
-        int OffsetInMilliseconds = ownerTimeZone.getOffset(System.currentTimeMillis());
-        // Convert milliseconds to hours
-        String offsetString = offsetToString(OffsetInMilliseconds);
-
-        //if (!datetime.contains("Z") && !datetime.contains("+") && !datetime.contains("-")) {
-            datetime += offsetString; // Assuming UTC if no time zone is specified
-        //}
-
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        return ZonedDateTime.parse(datetime, formatter);
-    }
-
-    // Convert a time zone offset in milliseconds to its string representation
-    private static String offsetToString(int offsetMillis) {
-        int hours = offsetMillis / (60 * 60 * 1000);
-        int minutes = Math.abs((offsetMillis / (60 * 1000)) % 60);
-
-        // Construct the offset string in the format ±HH:mm
-        return String.format("%03d:%02d", hours, minutes);
+        return DateTimeUtils.stringToZonedDateTimeParser(datetime, ownerTimeZone);
     }
 }

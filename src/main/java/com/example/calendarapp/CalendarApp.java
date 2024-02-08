@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -11,19 +12,21 @@ import java.util.Objects;
 
 public class CalendarApp extends Application {
 
-    private static CalendarAppData calendarAppData;
-
     @Override
     public void start(Stage stage) throws IOException {
         // create the calendarAppData
         createCalendarAppData();
 
         FXMLLoader loginLoader = new FXMLLoader(CalendarApp.class.getResource("login-view.fxml"));
-        Scene loginScene = new Scene(loginLoader.load(), 315, 195);
+        Parent loginContent = loginLoader.load();
+        // obtain root node
+        Region root = (Region) loginContent;
+
+        Scene loginScene = new Scene(loginContent, root.getPrefWidth(), root.getPrefHeight());
 
 
         LoginController loginController = loginLoader.getController();
-        loginController.setCalendarAppData(calendarAppData);
+        loginController.setCalendarAppData();
         stage.setTitle("Login");
         stage.setScene(loginScene);
         stage.show();
@@ -69,7 +72,7 @@ public class CalendarApp extends Application {
     public void createCalendarAppData() {
         // code to test
         // initialize the calendarApp
-        calendarAppData = new CalendarAppData();
+        CalendarAppData calendarAppData = CalendarAppData.getInstance();
 
         // Create user 1
         User user1 = new User("User1", "123456");
@@ -118,9 +121,9 @@ public class CalendarApp extends Application {
         calendar3.addEvent("Appointment", "2024-01-30T15:00", "2024-01-30T16:30");
         calendar3.addEvent("School", "2024-01-15T15:00", "2024-01-16T16:30");
         calendar3.addEvent("Hangout", "2024-02-15T17:00", "2024-02-16T17:30");
-        calendar3.addEvent("Dance class", "2024-02-13T15:00", "2024-02-13T16:30");
-        calendar3.addEvent("Work", "2024-02-15T15:00", "2024-02-15T16:30");
-        calendar3.addEvent("Hangout", "2024-02-16T17:00", "2024-02-16T17:30");
+        calendar3.addEvent("Dance class", "2024-02-05T15:00", "2024-02-05T16:30");
+        calendar3.addEvent("Work", "2024-02-06T15:00", "2024-02-06T16:30");
+        calendar3.addEvent("Hangout", "2024-02-06T17:00", "2024-02-07T17:30");
 
 
         // Create calendar 2
