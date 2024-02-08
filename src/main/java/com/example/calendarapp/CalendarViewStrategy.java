@@ -3,6 +3,7 @@ package com.example.calendarapp;
 import java.util.ArrayList;
 import java.util.Map;
 
+// Notes for A3: strategy method
 public interface CalendarViewStrategy {
     void drawCalendar();
 
